@@ -1,0 +1,23 @@
+*.o
+*.dSYM
+*.csv
+*.out
+*.png
+mnist/
+data/
+caffe/
+grasp/
+images/
+opencv/
+convnet/
+decaf/
+submission/
+cfg/
+darknet
+
+# OS Generated #
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+*.swp
