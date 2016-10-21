@@ -17,8 +17,8 @@ extern "C" ROS_box *demo_yolo();
 extern "C" void load_network(char *cfgfile, char *weightfile, float thresh);
 
 // define demo_yolo inputs
-char *cfg = "/media/ubuntu/darknet/cfg/yolo-tiny.cfg";
-char *weights = "/media/ubuntu/darknet/weights/yolo-tiny.weights";
+char *cfg = "/home/ubuntu/catkin_ws/src/darknet_ros/cfg/tiny-yolo.cfg";
+char *weights = "/media/ubuntu/darknet/weights/tiny-yolo.weights";
 float thresh = 0.3;
 
 const std::string class_labels[] = { "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat",

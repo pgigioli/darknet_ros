@@ -4,8 +4,8 @@ extern "C" void demo_yolo();
 extern "C" void load_network(char *cfgfile, char *weightfile, float thresh);
 
 cv::Mat cam_image_copy;
-char *cfg = "/home/ubuntu/catkin_ws/src/darknet_ros/cfg/yolo-tiny.cfg";
-char *weights = "/media/ubuntu/darknet/weights/yolo-tiny.weights";
+char *cfg = "/home/ubuntu/catkin_ws/src/darknet_ros/cfg/tiny-yolo.cfg";
+char *weights = "/media/ubuntu/darknet/weights/tiny-yolo.weights";
 float thresh = 0.2;
 const std::string CAMERA_TOPIC_NAME = "/usb_cam/image_raw";
 
