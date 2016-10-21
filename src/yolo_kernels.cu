@@ -85,7 +85,8 @@ extern "C" void load_network(char *cfgfile, char *weightfile, float thresh)
     for(j = 0; j < l.side*l.side*l.n; ++j) probs[j] = (float *)calloc(l.classes, sizeof(float *));
 }
 
-extern "C" void demo_yolo(char *cfgfile, char *weightfile, float thresh)
+//extern "C" void demo_yolo(char *cfgfile, char *weightfile, float thresh)
+extern "C" void demo_yolo()
 {
     pthread_t fetch_thread;
     pthread_t detect_thread;

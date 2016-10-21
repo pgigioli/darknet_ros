@@ -1,53 +1,63 @@
 #include "ROS_interface.h"
 
-extern "C" void demo_yolo(char *cfgfile, char *weightfile, float thresh);
+extern "C" void demo_yolo();
 extern "C" void load_network(char *cfgfile, char *weightfile, float thresh);
 
-using namespace std;
-using namespace cv;
-using namespace cv::gpu;
-
-cv::Mat cv_ptr_copy;
+cv::Mat cam_image_copy;
 char *cfg = "/home/ubuntu/catkin_ws/src/darknet_ros/cfg/yolo-tiny.cfg";
-char *weights = "/home/ubuntu/catkin_ws/src/darknet_ros/weights/yolo-tiny.weights";
+char *weights = "/media/ubuntu/darknet/weights/yolo-tiny.weights";
 float thresh = 0.2;
+const std::string CAMERA_TOPIC_NAME = "/usb_cam/image_raw";
 
 IplImage* get_Ipl_image()
 {
-   IplImage* ROS_img = new IplImage(cv_ptr_copy);
+   IplImage* ROS_img = new IplImage(cam_image_copy);
    return ROS_img;
 }
 
-void callback(const sensor_msgs::ImageConstPtr& msg)
+class ROS_interface
 {
-   cout << "usb image received" << endl;
-   cv_bridge::CvImagePtr cv_ptr;
+   ros::NodeHandle _nh;
+   image_transport::ImageTransport _it;
+   image_transport::Subscriber _image_sub;
 
-   try {
-      cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
-   } catch (cv_bridge::Exception& e) {
-      ROS_ERROR("cv_bridge exception: %s", e.what());
+public:
+   ROS_interface() : _it(_nh)
+   {
+      _image_sub = _it.subscribe(CAMERA_TOPIC_NAME, 1, &ROS_interface::cameraCallback, this);
+   }
+
+private:
+   void cameraCallback(const sensor_msgs::ImageConstPtr& msg)
+   {
+      std::cout << "usb image received" << std::endl;
+      cv_bridge::CvImagePtr cam_image;
+
+      try
+      {
+         cam_image = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
+      }
+      catch (cv_bridge::Exception& e)
+      {
+         ROS_ERROR("cv_bridge exception: %s", e.what());
+         return;
+      }
+
+      if (cam_image) {
+         cam_image_copy = cam_image->image.clone();
+         demo_yolo();
+      }
       return;
    }
-
-   if (cv_ptr) {
-      cv_ptr_copy = cv_ptr->image.clone();
-      demo_yolo(cfg, weights, thresh);
-   }
-   return;
-}
+};
 
 int main(int argc, char** argv)
 {
    ros::init(argc, argv, "ROS_interface");
 
-   ros::NodeHandle nh;
-   image_transport::ImageTransport it(nh);
-   image_transport::Subscriber image_sub;
-
    load_network(cfg, weights, thresh);
 
-   image_sub = it.subscribe("/usb_cam/image_raw", 1, callback);
+   ROS_interface ri;
    ros::spin();
    return 0;
 }
