@@ -69,7 +69,8 @@ public:
    yoloObjectDetector() : _it(_nh), _class_bboxes(num_classes), _class_obj_count(num_classes, 0), _bbox_colors(num_classes)
    {
       int incr = floor(255/num_classes);
-      for (int i = 0; i < num_classes; i++) {
+      for (int i = 0; i < num_classes; i++)
+      {
          _bbox_colors[i] = cv::Scalar(255 - incr*i, 0 + incr*i, 255 - incr*i);
       }
 
@@ -92,7 +93,8 @@ private:
    {
       darknet_ros::bbox bbox_result;
 
-      for (int i = 0; i < class_obj_count; i++) {
+      for (int i = 0; i < class_obj_count; i++)
+      {
          int xmin = (class_boxes[i].x - class_boxes[i].w/2)*FRAME_W;
          int ymin = (class_boxes[i].y - class_boxes[i].h/2)*FRAME_H;
          int xmax = (class_boxes[i].x + class_boxes[i].w/2)*FRAME_W;
@@ -125,13 +127,17 @@ private:
       int num = _boxes[0].num;
 
       // if at least one bbox found, draw box
-      if (num > 0  && num <= 100) {
+      if (num > 0  && num <= 100)
+      {
 	 std::cout << "# Objects: " << num << std::endl;
 
 	 // split bounding boxes by class
-         for (int i = 0; i < num; i++) {
-            for (int j = 0; j < num_classes; j++) {
-               if (_boxes[i].Class == j) {
+         for (int i = 0; i < num; i++)
+         {
+            for (int j = 0; j < num_classes; j++)
+            {
+               if (_boxes[i].Class == j)
+               {
                   _class_bboxes[j].push_back(_boxes[i]);
                   _class_obj_count[j]++;
                }
@@ -143,19 +149,23 @@ private:
          msg.data = 1;
          _found_object_pub.publish(msg);
 
-         for (int i = 0; i < num_classes; i++) {
+         for (int i = 0; i < num_classes; i++)
+         {
             if (_class_obj_count[i] > 0) drawBBoxes(input_frame, _class_bboxes[i],
 					      _class_obj_count[i], _bbox_colors[i], class_labels[i]);
          }
          _bboxes_pub.publish(_bbox_results_msg);
          _bbox_results_msg.bboxes.clear();
-      } else {
+      }
+      else
+      {
           std_msgs::Int8 msg;
           msg.data = 0;
           _found_object_pub.publish(msg);
       }
 
-      for (int i = 0; i < num_classes; i++) {
+      for (int i = 0; i < num_classes; i++)
+      {
          _class_bboxes[i].clear();
          _class_obj_count[i] = 0;
       }

@@ -48,7 +48,8 @@ private:
          return;
       }
 
-      if (cam_image) {
+      if (cam_image)
+      {
          cam_image_copy = cam_image->image.clone();
          demo_yolo();
       }
