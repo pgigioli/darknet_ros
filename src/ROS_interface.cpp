@@ -1,4 +1,9 @@
 #include "ROS_interface.h"
+#include <ros/ros.h>
+#include <image_transport/image_transport.h>
+#include <cv_bridge/cv_bridge.h>
+#include <sensor_msgs/image_encodings.h>
+#include <sensor_msgs/Image.h>
 
 extern "C" void demo_yolo();
 extern "C" void load_network(char *cfgfile, char *weightfile, float thresh);
