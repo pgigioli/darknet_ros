@@ -1,11 +1,12 @@
-#Darknet#
+# Darknet
+
 Darknet is an open source neural network framework written in C and CUDA. It is fast, easy to install, and supports CPU and GPU computation.
 
 For more information see the [Darknet project website](http://pjreddie.com/darknet).
 
 For questions or issues please use the [Google Group](https://groups.google.com/forum/#!forum/darknet).
 
-#Darknet ROS#
+# Darknet ROS
 This version of darknet provides an ROS interface for running the YOLO detection as an ROS node.  The default config uses the pascal VOC detection weights but this interface can be used with any custom weights.
 
 ROS_interface.cpp replaces the darknet.c executable and acts as the ROS entry point.  It includes a subscriber to a /usb_cam image topic and a function that sends that image to the YOLO source code.  yolo_kernels.cu has been modified to receive images from ROS_interface.cpp rather than from CvVideoCapture.
