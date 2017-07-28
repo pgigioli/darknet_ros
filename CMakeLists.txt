@@ -107,10 +107,11 @@ set(DARKNET_SRC_FILES
 )
 
 
-#cuda_add_executable(ROS_interface
-#  src/ROS_interface.cpp
-#  "${DARKNET_SRC_FILES}"
-#)
+cuda_add_executable(single_image_test
+  src/single_image_test.cpp
+  src/run_yolo.cpp
+  "${DARKNET_SRC_FILES}"
+)
 
 cuda_add_executable(yolo_ros
   src/yolo_ros.cpp
@@ -118,16 +119,16 @@ cuda_add_executable(yolo_ros
   "${DARKNET_SRC_FILES}"
 )
 
-#target_link_libraries(ROS_interface
-#   m
-#   pthread
-#   stdc++
-#   cuda
-#   cudart
-#   cublas
-#   curand
-#   ${catkin_LIBRARIES}
-#)
+target_link_libraries(single_image_test
+   m
+   pthread
+   stdc++
+   cuda
+   cudart
+   cublas
+   curand
+   ${catkin_LIBRARIES}
+)
 
 target_link_libraries(yolo_ros
    m
