@@ -47,7 +47,7 @@ include_directories(
 )
 
 link_directories(
-  /usr/local/cuda/lib
+  /usr/local/cuda/lib64
 )
 
 set(DARKNET_SRC_FILES
