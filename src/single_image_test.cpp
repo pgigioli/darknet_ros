@@ -19,7 +19,7 @@ extern "C" {
 
 // initialize YOLO functions that are called in this script
 ROS_box *run_yolo();
-void load_network(char *cfgfile, char *weightfile, float thresh, float hier);
+void load_net(char *cfgfile, char *weightfile, float thresh, float hier);
 
 // define demo_yolo inputs
 char *cfg = "/home/catkin_ws/src/darknet_ros/cfg/tiny-yolo-voc.cfg";
@@ -31,7 +31,7 @@ const std::string class_labels[] = { "aeroplane", "bicycle", "bird", "boat", "bo
 		                     "potted plant", "sheep", "sofa", "train", "tv monitor" };
 const int num_classes = sizeof(class_labels)/sizeof(class_labels[0]);
 
-cv::Mat cam_image_copy;
+cv::Mat input_frame;
 
 // define parameters
 //const std::string CAMERA_TOPIC_NAME = "/usb_cam/image_raw";
@@ -43,9 +43,10 @@ int FRAME_H;
 int FRAME_AREA;
 int FRAME_COUNT = 0;
 
-std::vector< std::vector<ROS_box> > _class_bboxes;
-std::vector<int> _class_obj_count;
-std::vector<cv::Scalar> _bbox_colors;
+//std::vector< std::vector<ROS_box> > _class_bboxes;
+std::vector<ROS_box> _class_bboxes[num_classes];
+int _class_obj_count[num_classes];
+cv::Scalar _bbox_colors[num_classes];
 darknet_ros::bbox_array _bbox_results_msg;
 ROS_box* _boxes;
 
@@ -54,7 +55,7 @@ ROS_box* _boxes;
 // message as an IplImage
 IplImage* get_Ipl_image()
 {
-   IplImage* ROS_img = new IplImage(cam_image_copy);
+   IplImage* ROS_img = new IplImage(input_frame);
    return ROS_img;
 }
 /*
@@ -124,7 +125,7 @@ private:*/
 
    void get_detections(cv::Mat &full_frame)
    {
-      cv::Mat input_frame = full_frame.clone();
+      input_frame = full_frame.clone();
 
       // run yolo and get bounding boxes for objects
       _boxes = run_yolo();
@@ -149,7 +150,6 @@ private:*/
                }
             }
          }
-
 	 // send message that an object has been detected
          //std_msgs::Int8 msg;
          //msg.data = 1;
@@ -219,11 +219,10 @@ int main(int argc, char** argv)
 
    //ros::param::get(CAMERA_WIDTH_PARAM, FRAME_W);
    //ros::param::get(CAMERA_HEIGHT_PARAM, FRAME_H);
-
-   load_network(cfg, weights, thresh);
+   load_net(cfg, weights, thresh, 0.5);
    get_detections(image);
 
    //yoloObjectDetector yod;
-   ros::spin();
+   //ros::spin();
    return 0;
 }

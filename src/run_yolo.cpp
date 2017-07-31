@@ -5,6 +5,7 @@
 //#endif
 
 #include "yolo_ros.h"
+#include <iostream>
 
 extern "C"{
 #include "network.h"
@@ -53,7 +54,8 @@ static int running = 0;
 
 static int demo_frame = 3;
 static int demo_detections = 0;
-static float **predictions;
+//static float **predictions;
+static float *predictions[1];
 static int demo_index = 0;
 static int demo_done = 0;
 static float *avg;
@@ -206,7 +208,7 @@ void *detect_loop(void *ptr)
 }*/
 
 //void load_network(char *cfgfile, char *weightfile, float thresh, int cam_index, char **names, int classes, int delay, char *prefix, int avg_frames, float hier, int w, int h, int frames, int fullscreen)
-void load_network(char *cfgfile, char *weightfile, float thresh, float hier)
+void load_net(char *cfgfile, char *weightfile, float thresh, float hier)
 {
    //demo_frame = avg_frames;
    //predictions = calloc(demo_frame, sizeof(float*));
@@ -216,7 +218,7 @@ void load_network(char *cfgfile, char *weightfile, float thresh, float hier)
    //demo_classes = classes;
    demo_thresh = thresh;
    demo_hier = hier;
-   printf("Loading network...\n");
+   std::cout << "Loading network...\n" << std::endl;
    net = parse_network_cfg(cfgfile);
    if(weightfile)
    {
@@ -231,8 +233,9 @@ void load_network(char *cfgfile, char *weightfile, float thresh, float hier)
    int j;
 
    avg = (float *) calloc(l.outputs, sizeof(float));
-   for(j = 0; j < demo_frame; ++j) predictions[j] = (float *) calloc(l.outputs, sizeof(float));
+   demo_frame = 1;
 
+   for(j = 0; j < demo_frame; ++j) predictions[j] = (float *) calloc(l.outputs, sizeof(float));
    boxes = (box *)calloc(l.w*l.h*l.n, sizeof(box));
    ROI_boxes = (ROS_box *)calloc(l.w*l.h*l.n, sizeof(ROS_box));
    probs = (float **)calloc(l.w*l.h*l.n, sizeof(float *));
@@ -245,9 +248,9 @@ ROS_box *run_yolo()
    det_s = in_s;
    detect_in_thread();
 
-   fps = 1./(get_wall_time() - demo_time);
+   fps = 1./(get_wall_time() - demo_time + 0.00000001);
    demo_time = get_wall_time();
-   return ROI_boxes; 
+   return ROI_boxes;
 /*   buff[0] = get_image_from_stream(cap);
     buff[1] = copy_image(buff[0]);
     buff[2] = copy_image(buff[0]);
