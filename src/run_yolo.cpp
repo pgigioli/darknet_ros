@@ -26,9 +26,9 @@ extern "C"{
 
 extern "C" image ipl_to_image(IplImage* src);
 
-static char **demo_names;
+//static char **demo_names;
 //static image **demo_alphabet;
-static int demo_classes;
+//static int demo_classes;
 
 static float **probs;
 static box *boxes;
@@ -41,11 +41,11 @@ static float demo_thresh = 0;
 static float demo_hier = .5;
 //static int running = 0;
 
-//static int demo_frame = 3;
+static int demo_frame = 1;
 static int demo_detections = 0;
 static float *predictions[1];
 static int demo_index = 0;
-static int demo_done = 0;
+//static int demo_done = 0;
 static float *avg;
 double demo_time;
 static int obj_count = 0;
@@ -225,7 +225,6 @@ void load_net(char *cfgfile, char *weightfile, float thresh, float hier)
    int j;
 
    avg = (float *) calloc(l.outputs, sizeof(float));
-   demo_frame = 1;
 
    for(j = 0; j < demo_frame; ++j) predictions[j] = (float *) calloc(l.outputs, sizeof(float));
    boxes = (box *)calloc(l.w*l.h*l.n, sizeof(box));
