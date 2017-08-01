@@ -20,8 +20,6 @@ extern "C"{
 #include <sys/time.h>
 }
 
-//#define DEMO 1
-
 #ifdef OPENCV
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
@@ -29,7 +27,7 @@ extern "C"{
 extern "C" image ipl_to_image(IplImage* src);
 
 static char **demo_names;
-static image **demo_alphabet;
+//static image **demo_alphabet;
 static int demo_classes;
 
 static float **probs;
@@ -39,29 +37,21 @@ static image in;
 static image in_s;
 static image det_s;
 static float fps = 0;
-//static network net2;
-//static float **probs2;
-//static box *boxes2;
-//static float **predictions2;
-//static image buff [3];
-//static image buff_letter[3];
-//static int buff_index = 0;
-//static CvCapture * cap;
-//static IplImage  * ipl;
 static float demo_thresh = 0;
 static float demo_hier = .5;
-static int running = 0;
+//static int running = 0;
 
-static int demo_frame = 3;
+//static int demo_frame = 3;
 static int demo_detections = 0;
-//static float **predictions;
 static float *predictions[1];
 static int demo_index = 0;
 static int demo_done = 0;
 static float *avg;
 double demo_time;
+static int obj_count = 0;
 
-static ROS_box *ROI_boxes;
+//static ROS_box *ROI_boxes;
+static PredBox *pred_boxes;
 
 double get_wall_time()
 {
@@ -72,7 +62,7 @@ double get_wall_time()
     return (double)time.tv_sec + (double)time.tv_usec * .000001;
 }
 
-void detect_in_thread()
+void detect_objects()
 {
    // running = 1;
     float nms = .4;
@@ -106,7 +96,7 @@ void detect_in_thread()
    // extract the bounding boxes and send them to ROS
    int total = l.w*l.h*l.n;
    int i, j;
-   int count = 0;
+   //int count = 0;
    for(i = 0; i < total; ++i)
    {
       float xmin = boxes[i].x - boxes[i].w/2.;
@@ -133,12 +123,13 @@ void detect_in_thread()
             // bbox must be 1% size of frame (3.2x2.4 pixels)
             if (bbox_width > 0.01 && bbox_height > 0.01)
             {
-               ROI_boxes[count].x = x_center;
-               ROI_boxes[count].y = y_center;
-               ROI_boxes[count].w = bbox_width;
-               ROI_boxes[count].h = bbox_height;
-               ROI_boxes[count].Class = j;
-               count++;
+               pred_boxes[obj_count].x = x_center;
+               pred_boxes[obj_count].y = y_center;
+               pred_boxes[obj_count].w = bbox_width;
+               pred_boxes[obj_count].h = bbox_height;
+               pred_boxes[obj_count].Class = j;
+               pred_boxes[obj_count].prob = probs[i][j];
+	       obj_count++;
             }
          }
       }
@@ -146,18 +137,23 @@ void detect_in_thread()
 
    // create array to store found bounding boxes
    // if no object detected, make sure that ROS knows that num = 0
-   if (count == 0)
+   /*if (count == 0)
    {
-      ROI_boxes[0].num = 0;
+      pred_boxes[0].num = 0;
    }
    else
    {
-      ROI_boxes[0].num = count;
-   }
+      pred_boxes[0].num = count;
+   }*/
     return;
 }
 
-void fetch_in_thread()
+int get_obj_count()
+{
+   return obj_count;
+}
+
+void fetch_image()
 {
    IplImage* ROS_img = get_Ipl_image();
    in = ipl_to_image(ROS_img);
@@ -165,10 +161,6 @@ void fetch_in_thread()
    ROS_img = NULL;
    in_s = letterbox_image(in, net.w, net.h);
    return;
-//    int status = fill_image_from_stream(cap, buff[buff_index]);
-//    letterbox_image_into(buff[buff_index], net.w, net.h, buff_letter[buff_index]);
-//    if(status == 0) demo_done = 1;
-//    return 0;
 }
 /*
 void *display_in_thread(void *ptr)
@@ -212,7 +204,7 @@ void load_net(char *cfgfile, char *weightfile, float thresh, float hier)
 {
    //demo_frame = avg_frames;
    //predictions = calloc(demo_frame, sizeof(float*));
-   image **alphabet = load_alphabet();
+   //image **alphabet = load_alphabet();
    //demo_names = names;
    //demo_alphabet = alphabet;
    //demo_classes = classes;
@@ -237,20 +229,20 @@ void load_net(char *cfgfile, char *weightfile, float thresh, float hier)
 
    for(j = 0; j < demo_frame; ++j) predictions[j] = (float *) calloc(l.outputs, sizeof(float));
    boxes = (box *)calloc(l.w*l.h*l.n, sizeof(box));
-   ROI_boxes = (ROS_box *)calloc(l.w*l.h*l.n, sizeof(ROS_box));
+   pred_boxes = (PredBox *)calloc(l.w*l.h*l.n, sizeof(PredBox));
    probs = (float **)calloc(l.w*l.h*l.n, sizeof(float *));
    for(j = 0; j < l.w*l.h*l.n; ++j) probs[j] = (float *)calloc(l.classes+1, sizeof(float));
 }
 
-ROS_box *run_yolo()
+PredBox *run_yolo()
 {
-   fetch_in_thread();
+   fetch_image();
    det_s = in_s;
-   detect_in_thread();
+   detect_objects();
 
    fps = 1./(get_wall_time() - demo_time + 0.00000001);
    demo_time = get_wall_time();
-   return ROI_boxes;
+   return pred_boxes;
 /*   buff[0] = get_image_from_stream(cap);
     buff[1] = copy_image(buff[0]);
     buff[2] = copy_image(buff[0]);

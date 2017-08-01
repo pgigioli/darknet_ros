@@ -18,8 +18,9 @@ extern "C" {
 }
 
 // initialize YOLO functions that are called in this script
-ROS_box *run_yolo();
+PredBox *run_yolo();
 void load_net(char *cfgfile, char *weightfile, float thresh, float hier);
+int get_obj_count();
 
 // define demo_yolo inputs
 char *cfg = "/home/catkin_ws/src/darknet_ros/cfg/tiny-yolo-voc.cfg";
@@ -44,11 +45,12 @@ int FRAME_AREA;
 int FRAME_COUNT = 0;
 
 //std::vector< std::vector<ROS_box> > _class_bboxes;
-std::vector<ROS_box> _class_bboxes[num_classes];
+std::vector<PredBox> _class_bboxes[num_classes];
 int _class_obj_count[num_classes];
 cv::Scalar _bbox_colors[num_classes];
 darknet_ros::bbox_array _bbox_results_msg;
-ROS_box* _boxes;
+//ROS_box* _boxes;
+PredBox* _boxes;
 
 // define a function that will replace CvVideoCapture.
 // This function is called in yolo_kernels and allows YOLO to receive the ROS image
@@ -95,7 +97,7 @@ public:
    }
 
 private:*/
-   void drawBBoxes(cv::Mat &input_frame, std::vector<ROS_box> &class_boxes, int &class_obj_count,
+   void drawBBoxes(cv::Mat &input_frame, std::vector<PredBox> &class_boxes, int &class_obj_count,
 		   cv::Scalar &bbox_color, const std::string &class_label)
    {
       darknet_ros::bbox bbox_result;
@@ -131,7 +133,8 @@ private:*/
       _boxes = run_yolo();
 
       // get the number of bounding boxes found
-      int num = _boxes[0].num;
+      //int num = _boxes[0].num;
+      int num = get_obj_count();
 
       // if at least one bbox found, draw box
       if (num > 0  && num <= 100)

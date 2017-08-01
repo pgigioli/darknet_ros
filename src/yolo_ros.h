@@ -10,10 +10,14 @@
 #include "cublas_v2.h"
 
 IplImage* get_Ipl_image();
-
+/*
 typedef struct {
   float x, y, w, h;
   int num, Class;
 } ROS_box;
-
+*/
+typedef struct {
+  float x, y, w, h, prob;
+  int Class;
+} PredBox;
 #endif
