@@ -148,3 +148,6 @@ target_link_libraries(yolo_ros
    curand
    ${catkin_LIBRARIES}
 )
+
+add_dependencies(single_image_test my_package_generate_messages_cpp)
+add_dependencies(yolo_ros my_package_generate_messages_cpp)
