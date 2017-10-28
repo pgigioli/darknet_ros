@@ -20,7 +20,7 @@ extern "C" {
 // initialize YOLO functions that are called in this script
 //ROS_box *run_yolo();
 PredBox *run_yolo();
-void load_network(char *cfgfile, char *weightfile, float thresh, float hier);
+void load_net(char *cfgfile, char *weightfile, float thresh, float hier);
 int get_obj_count();
 
 // define demo_yolo inputs
@@ -33,7 +33,7 @@ const std::string class_labels[] = { "aeroplane", "bicycle", "bird", "boat", "bo
 		                     "potted plant", "sheep", "sofa", "train", "tv monitor" };
 const int num_classes = sizeof(class_labels)/sizeof(class_labels[0]);
 
-cv::Mat cam_image_copy;
+cv::Mat input_image;
 
 // define parameters
 const std::string CAMERA_TOPIC_NAME = "/usb_cam/image_raw";
@@ -50,7 +50,7 @@ int FRAME_COUNT = 0;
 // message as an IplImage
 IplImage* get_Ipl_image()
 {
-   IplImage* ROS_img = new IplImage(cam_image_copy);
+   IplImage* ROS_img = new IplImage(input_image);
    return ROS_img;
 }
 
@@ -194,7 +194,7 @@ private:
 
       if (cam_image)
       {
-         cam_image_copy = cam_image->image.clone();
+         input_image = cam_image->image.clone();
 
 	 if (FRAME_COUNT == 0) {
             runYOLO(cam_image->image);
@@ -213,7 +213,7 @@ int main(int argc, char** argv)
    ros::param::get(CAMERA_WIDTH_PARAM, FRAME_W);
    ros::param::get(CAMERA_HEIGHT_PARAM, FRAME_H);
 
-   load_network(cfg, weights, thresh);
+   load_net(cfg, weights, thresh, 0.5);
 
    yoloObjectDetector yod;
    ros::spin();
