@@ -6,6 +6,7 @@ To use: Modify yolo_ros.cpp with the correct path to your yolo-voc.weights and y
 Topics:
 
 /found_object - displays "1" or "0" corresponding to whether or not an object has been detected
+
 /YOLO_bboxes  - displays the class label that was detected followed by the bbox coordinates [xmin, ymin, xmax, ymax].
 
 # Dockerfile
