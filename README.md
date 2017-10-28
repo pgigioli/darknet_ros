@@ -1,10 +1,35 @@
-# Darknet ROS version 2!
+# Darknet ROS version 2
 This version of darknet provides an ROS interface for running the YOLO detection as an ROS node.  The default config uses the pascal VOC detection weights but this interface can be used with any custom weights.
 
-ROS_interface.cpp replaces the darknet.c executable and acts as the ROS entry point.  It includes a subscriber to a /usb_cam image topic and a function that sends that image to the YOLO source code.  yolo_kernels.cu has been modified to receive images from ROS_interface.cpp rather than from CvVideoCapture.
+To use: Modify yolo_ros.cpp with the correct path to your yolo-voc.weights and yolo-voc.cfg and change the /usb_cam/image_raw topic to your camera topic.  Compile normally with catkin_make and run with "rosrun darknet_ros yolo_ros".
 
-To use: Modify ROS_interface.cpp with the correct path to your yolo-tiny.weights and change the /usb_cam/image_raw topic to your camera topic.  Compile normally with catkin_make and run with "rosrun darknet_ros ROS_interface".
+Topics:
 
-NEW: YOLO_object_detector.cpp gives you full control of the output of YOLO.  This ROS node extracts the bounding box coordinates from the YOLO source code and annotates the images itself.  It publishes two topics: /found_object displays "1" or "0" corresponding to whether or not an object has been detected, and /YOLO_bboxes displays the class label that was detected followed by the bbox coordinates [xmin, ymin, xmax, ymax]. 
+/found_object - displays "1" or "0" corresponding to whether or not an object has been detected
+/YOLO_bboxes  - displays the class label that was detected followed by the bbox coordinates [xmin, ymin, xmax, ymax].
 
-To use: Modify YOLO_object_detector.cpp with the correct path to your yolo-tiny.weights and yolo-tiny.cfg file, change the /usb_cam/image_raw topic to your camera topic, and change the class_labels[] array with your desired labels.  Run with "rosrun darknet_ros yolo_object_detector".
+# Dockerfile
+Avoid incompatibility issues with this dockerfile that will work out of the box. Docker image includes ubuntu 16.04, ROS kinetic, CUDA 8 and cudnn 6.  Docker image will install darknet_ros and the usb_cam package.
+ 
+Install docker here: https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/
+Install nvidia-docker here: https://github.com/NVIDIA/nvidia-docker
+
+Build docker image:
+
+`docker build -t darknet_ros:latest .`
+
+Run docker container and allow docker access to webcam:
+
+`xhost +`
+
+`nvidia-docker run -it --privileged -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY <image>`
+
+Build darknet_ros nodes (you may have to run this twice):
+
+`catkin_make`
+
+`source devel/setup.bash`
+
+Launch darknet_ros with usb_cam:
+
+`roslaunch darknet_ros yolo_ros.launch`
