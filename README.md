@@ -5,7 +5,15 @@ To use:
 
 `git clone --recursive https://github.com/pgigioli/darknet_ros.git`
 
-Modify yolo_ros.cpp with the correct path to your yolo-voc.weights and yolo-voc.cfg and change the /usb_cam/image_raw topic to your camera topic.  Compile normally with catkin_make and run with "rosrun darknet_ros yolo_ros".
+Modify:
+
+yolo_ros.cpp with the correct path to your yolo-voc.weights and yolo-voc.cfg and change the /usb_cam/image_raw topic to your camera topic.  Compile normally with catkin_make and run with "rosrun darknet_ros yolo_ros".
+
+Launchfile:
+
+Make sure the usb_cam package is installed and use the yolo_ros.launch with:
+
+`roslaunch darknet_ros yolo_ros.launch`
 
 Topics:
 
