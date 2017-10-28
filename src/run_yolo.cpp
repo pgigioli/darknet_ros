@@ -71,6 +71,7 @@ void detect_objects()
     //float *X = buff_letter[(buff_index+2)%3].data;
     float *X = det_s.data;
     float *prediction = network_predict(net, X);
+    free(det_s.data);
 
     memcpy(predictions[demo_index], prediction, l.outputs*sizeof(float));
     mean_arrays(predictions, demo_frame, l.outputs, avg);
@@ -160,6 +161,7 @@ void fetch_image()
    delete ROS_img;
    ROS_img = NULL;
    in_s = letterbox_image(in, net.w, net.h);
+   free(in.data);
    return;
 }
 /*

@@ -61,14 +61,14 @@ class yoloObjectDetector
    image_transport::Subscriber _image_sub;
    ros::Publisher _found_object_pub;
    ros::Publisher _bboxes_pub;
-   std::vector< std::vector<PredBox> > _class_bboxes;
-   std::vector<int> _class_obj_count;
+   //std::vector< std::vector<PredBox> > _class_bboxes;
+   //std::vector<int> _class_obj_count;
    std::vector<cv::Scalar> _bbox_colors;
    darknet_ros::bbox_array _bbox_results_msg;
    PredBox* _boxes;
 
 public:
-   yoloObjectDetector() : _it(_nh), _class_bboxes(num_classes), _class_obj_count(num_classes, 0), _bbox_colors(num_classes)
+   yoloObjectDetector() : _it(_nh), _bbox_colors(num_classes)
    {
       int incr = floor(255/num_classes);
       for (int i = 0; i < num_classes; i++)
@@ -121,6 +121,8 @@ private:
    void runYOLO(cv::Mat &full_frame)
    {
       cv::Mat input_frame = full_frame.clone();
+      std::vector< std::vector<PredBox> > class_bboxes(num_classes);
+      std::vector<int> class_obj_count(num_classes, 0);
 
       // run yolo and get bounding boxes for objects
       _boxes = run_yolo();
@@ -140,8 +142,8 @@ private:
             {
                if (_boxes[i].Class == j)
                {
-                  _class_bboxes[j].push_back(_boxes[i]);
-                  _class_obj_count[j]++;
+                  class_bboxes[j].push_back(_boxes[i]);
+                  class_obj_count[j]++;
                }
             }
          }
@@ -153,8 +155,8 @@ private:
 
          for (int i = 0; i < num_classes; i++)
          {
-            if (_class_obj_count[i] > 0) drawBBoxes(input_frame, _class_bboxes[i],
-					      _class_obj_count[i], _bbox_colors[i], class_labels[i]);
+            if (class_obj_count[i] > 0) drawBBoxes(input_frame, class_bboxes[i],
+					      class_obj_count[i], _bbox_colors[i], class_labels[i]);
          }
          _bboxes_pub.publish(_bbox_results_msg);
          _bbox_results_msg.bboxes.clear();
@@ -166,11 +168,11 @@ private:
           _found_object_pub.publish(msg);
       }
 
-      for (int i = 0; i < num_classes; i++)
-      {
-         _class_bboxes[i].clear();
-         _class_obj_count[i] = 0;
-      }
+      //for (int i = 0; i < num_classes; i++)
+      //{
+      //   _class_bboxes[i].clear();
+      //   _class_obj_count[i] = 0;
+      //}
 
       cv::imshow(OPENCV_WINDOW, input_frame);
       cv::waitKey(3);
