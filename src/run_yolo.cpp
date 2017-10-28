@@ -97,7 +97,7 @@ void detect_objects()
    // extract the bounding boxes and send them to ROS
    int total = l.w*l.h*l.n;
    int i, j;
-   //int count = 0;
+   obj_count = 0;
    for(i = 0; i < total; ++i)
    {
       float xmin = boxes[i].x - boxes[i].w/2.;
@@ -242,6 +242,7 @@ PredBox *run_yolo()
    detect_objects();
 
    fps = 1./(get_wall_time() - demo_time + 0.00000001);
+   std::cout<<"FPS: "<<fps<<std::endl;
    demo_time = get_wall_time();
    return pred_boxes;
 /*   buff[0] = get_image_from_stream(cap);

@@ -48,6 +48,7 @@ RUN git clone https://github.com/bosch-ros-pkg/usb_cam.git
 RUN mkdir /home/catkin_ws/src/darknet_ros/weights
 WORKDIR /home/catkin_ws/src/darknet_ros/weights
 RUN wget http://pjreddie.com/media/files/tiny-yolo-voc.weights
+RUN wget http://pjreddie.com/media/files/yolo-voc.weights
 
 WORKDIR /home/catkin_ws
 
