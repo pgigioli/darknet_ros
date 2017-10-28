@@ -39,7 +39,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN mkdir -p /home/catkin_ws/src
 RUN apt-get update && apt-get -y install build-essential \
-    git wget nano
+    git wget nano v4l-utils
 
 WORKDIR /home/catkin_ws/src
 RUN git clone --recursive -b cuda8_0-dev https://github.com/pgigioli/darknet_ros.git
