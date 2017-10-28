@@ -12,6 +12,7 @@ Topics:
 Avoid incompatibility issues with this dockerfile that will work out of the box. Docker image includes ubuntu 16.04, ROS kinetic, CUDA 8 and cudnn 6.  Docker image will install darknet_ros and the usb_cam package.
  
 Install docker here: https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/
+
 Install nvidia-docker here: https://github.com/NVIDIA/nvidia-docker
 
 Build docker image:
