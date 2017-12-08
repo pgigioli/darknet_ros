@@ -7,16 +7,16 @@ This version of darknet provides an ROS interface for running the YOLO detection
 
 In yolo_ros.cpp, modify lines:
 
-'char *cfg = "/home/catkin_ws/src/darknet_ros/cfg/yolo-voc.cfg";
- char *weights = "/home/catkin_ws/src/darknet_ros/weights/yolo-voc.weights";'
+`char *cfg = "/home/catkin_ws/src/darknet_ros/cfg/yolo-voc.cfg";
+ char *weights = "/home/catkin_ws/src/darknet_ros/weights/yolo-voc.weights";`
  
 with the correct path to your yolo-voc.weights and yolo-voc.cfg.
 
 If not using the usb_cam package, also modify the lines: 
 
-'const std::string CAMERA_TOPIC_NAME = "/usb_cam/image_raw";
+`const std::string CAMERA_TOPIC_NAME = "/usb_cam/image_raw";
  const std::string CAMERA_WIDTH_PARAM = "/usb_cam/image_width";
- const std::string CAMERA_HEIGHT_PARAM = "/usb_cam/image_height";'
+ const std::string CAMERA_HEIGHT_PARAM = "/usb_cam/image_height";`
  
 to your camera topic name.  Compile normally with catkin_make and run with "rosrun darknet_ros yolo_ros".
 
