@@ -21,7 +21,9 @@ If not using the usb_cam package, also modify the lines:
 
 `const std::string CAMERA_HEIGHT_PARAM = "/usb_cam/image_height";`
  
-to your camera topic name.  Compile normally with catkin_make and run with "rosrun darknet_ros yolo_ros".
+to your camera topic name.  Compile normally with catkin_make and run with
+
+`rosrun darknet_ros yolo_ros`
 
 ## Launchfile:
 
