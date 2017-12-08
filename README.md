@@ -8,6 +8,7 @@ This version of darknet provides an ROS interface for running the YOLO detection
 In yolo_ros.cpp, modify lines:
 
 `char *cfg = "/home/catkin_ws/src/darknet_ros/cfg/yolo-voc.cfg";`
+
 `char *weights = "/home/catkin_ws/src/darknet_ros/weights/yolo-voc.weights";`
  
 with the correct path to your yolo-voc.weights and yolo-voc.cfg.
