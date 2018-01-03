@@ -52,6 +52,7 @@ include_directories(
   ${DARKNET_DIR}/include
   ${DARKNET_SRC_DIR}
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 link_directories(
@@ -136,6 +137,7 @@ target_link_libraries(single_image_test
    cublas
    curand
    ${catkin_LIBRARIES}
+   ${OpenCV_LIBRARIES}
 )
 
 target_link_libraries(yolo_ros
@@ -147,6 +149,7 @@ target_link_libraries(yolo_ros
    cublas
    curand
    ${catkin_LIBRARIES}
+   ${OpenCV_LIBRARIES}
 )
 
 add_dependencies(single_image_test darknet_ros_generate_messages_cpp)
