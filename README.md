@@ -36,7 +36,7 @@ Make sure the usb_cam package is installed and use the yolo_ros.launch with:
 
 /found_object - displays "1" or "0" corresponding to whether or not an object has been detected
 
-/YOLO_bboxes  - displays the class label that was detected followed by the confidence score and the bbox coordinates [xmin, ymin, xmax, ymax].
+/YOLO_bboxes  - displays the class label that was detected followed by the confidence score and the bbox coordinates: [Class, prob, xmin, ymin, xmax, ymax].
 
 ## Dockerfile
 Avoid incompatibility issues with this dockerfile that will work out of the box. Docker image includes ubuntu 16.04, ROS kinetic, CUDA 8 and cudnn 6.  Docker image will install darknet_ros and the usb_cam package.
