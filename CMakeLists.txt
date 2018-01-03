@@ -1,3 +1,5 @@
+#[[
+
 cmake_minimum_required(VERSION 2.8.12)
 project(darknet_ros)
 
@@ -14,8 +16,8 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_message_files(
   FILES
-  bbox.msg
-  bbox_array.msg
+  Bbox.msg
+  BboxArray.msg
 )
 
 generate_messages(
@@ -40,7 +42,7 @@ set(
 add_definitions(-DGPU -DOPENCV -O4 -g)
 
 catkin_package(
-  CATKIN_DEPENDS message_runtime
+  CATKIN_DEPENDS message_runtime std_msgs
 )
 
 set(DARKNET_DIR "darknet")
@@ -149,5 +151,7 @@ target_link_libraries(yolo_ros
    ${catkin_LIBRARIES}
 )
 
-add_dependencies(single_image_test my_package_generate_messages_cpp)
-add_dependencies(yolo_ros my_package_generate_messages_cpp)
+add_dependencies(single_image_test darknet_ros_generate_messages_cpp)
+add_dependencies(yolo_ros darknet_ros_generate_messages_cpp)
+
+]]

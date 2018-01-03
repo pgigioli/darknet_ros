@@ -10,8 +10,8 @@
 #include <pthread.h>
 #include <std_msgs/Int8.h>
 #include <math.h>
-#include <darknet_ros/bbox_array.h>
-#include <darknet_ros/bbox.h>
+#include <darknet_ros/BboxArray.h>
+#include <darknet_ros/Bbox.h>
 
 extern "C" {
   #include "box.h"
@@ -24,8 +24,8 @@ void load_net(char *cfgfile, char *weightfile, float thresh, float hier);
 int get_obj_count();
 
 // define demo_yolo inputs
-char *cfg = "/home/catkin_ws/src/darknet_ros/cfg/yolo-voc.cfg";
-char *weights = "/home/catkin_ws/src/darknet_ros/weights/yolo-voc.weights";
+char *cfg = "/home/soccerbot/soccer/src/darknet_ros/cfg/yolo-voc.cfg";
+char *weights = "/home/soccerbot/soccer/src/darknet_ros/weights/yolo-voc.weights";
 float thresh = 0.5;
 
 const std::string class_labels[] = { "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat",
@@ -36,9 +36,9 @@ const int num_classes = sizeof(class_labels)/sizeof(class_labels[0]);
 cv::Mat input_image;
 
 // define parameters
-const std::string CAMERA_TOPIC_NAME = "/usb_cam/image_raw";
-const std::string CAMERA_WIDTH_PARAM = "/usb_cam/image_width";
-const std::string CAMERA_HEIGHT_PARAM = "/usb_cam/image_height";
+const std::string CAMERA_TOPIC_NAME = "/camera_input/image_raw";
+const std::string CAMERA_WIDTH_PARAM = "/image_acquisition/image_width";
+const std::string CAMERA_HEIGHT_PARAM = "/image_acquisition/image_height";
 const std::string OPENCV_WINDOW = "YOLO object detection";
 int FRAME_W;
 int FRAME_H;
@@ -64,7 +64,7 @@ class yoloObjectDetector
    //std::vector< std::vector<PredBox> > _class_bboxes;
    //std::vector<int> _class_obj_count;
    std::vector<cv::Scalar> _bbox_colors;
-   darknet_ros::bbox_array _bbox_results_msg;
+   darknet_ros::BboxArray _bbox_results_msg;
    PredBox* _boxes;
 
 public:
@@ -79,7 +79,7 @@ public:
       _image_sub = _it.subscribe(CAMERA_TOPIC_NAME, 1,
 	                       &yoloObjectDetector::cameraCallback,this);
       _found_object_pub = _nh.advertise<std_msgs::Int8>("found_object", 1);
-      _bboxes_pub = _nh.advertise<darknet_ros::bbox_array>("YOLO_bboxes", 1);
+      _bboxes_pub = _nh.advertise<darknet_ros::BboxArray>("YOLO_bboxes", 1);
 
       cv::namedWindow(OPENCV_WINDOW, cv::WINDOW_NORMAL);
    }
@@ -93,7 +93,7 @@ private:
    void drawBBoxes(cv::Mat &input_frame, std::vector<PredBox> &class_boxes, int &class_obj_count,
 		   cv::Scalar &bbox_color, const std::string &class_label)
    {
-      darknet_ros::bbox bbox_result;
+      darknet_ros::Bbox bbox_result;
 
       for (int i = 0; i < class_obj_count; i++)
       {
