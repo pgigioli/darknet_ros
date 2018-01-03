@@ -55,7 +55,7 @@ Run docker container and allow docker access to webcam:
 
 `nvidia-docker run -it --privileged -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY <image>`
 
-Build darknet_ros nodes (you may have to run this twice):
+Build darknet_ros node:
 
 `catkin_make`
 
