@@ -1,5 +1,6 @@
 string Class
-int64 xmin
-int64 ymin
-int64 xmax
-int64 ymax
+float32 prob
+uint32 xmin
+uint32 ymin
+uint32 xmax
+uint32 ymax

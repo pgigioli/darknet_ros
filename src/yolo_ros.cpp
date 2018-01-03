@@ -103,6 +103,7 @@ private:
          int ymax = (class_boxes[i].y + class_boxes[i].h/2)*FRAME_H;
 
          bbox_result.Class = class_label;
+         bbox_result.prob = class_boxes[i].prob;
          bbox_result.xmin = xmin;
          bbox_result.ymin = ymin;
          bbox_result.xmax = xmax;
