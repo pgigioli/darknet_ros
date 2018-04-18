@@ -14,6 +14,15 @@ char *weights = "/home/catkin_ws/src/darknet_ros/weights/yolo-voc.weights";
  
 with the correct path to your yolo-voc.weights and yolo-voc.cfg.
 
+If using a custom trained model, also modify lines:
+
+```
+const std::string class_labels[] = { "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat",
+		     	                             "chair", "cow", "dining table", "dog", "horse", "motorbike", "person",
+		                                   "potted plant", "sheep", "sofa", "train", "tv monitor" };
+```
+to your custom classes.
+
 If not using the usb_cam package, also modify the lines: 
 
 ```
